@@ -252,11 +252,6 @@ module.exports = (on, config) => {
     config.baseUrl = process.env.BASE_URL;
   }
 
-  if (process.env.CI) {
-    config.retries.runMode = 1;
-    config.retries.openMode = 1;
-  }
-
   if (process.env.SKIP_METAMASK_SETUP) {
     config.env.SKIP_METAMASK_SETUP = true;
   }
