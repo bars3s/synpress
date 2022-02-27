@@ -36,16 +36,25 @@ module.exports = {
     return true;
   },
   assignWindows: async () => {
-    let pages = await puppeteerBrowser.pages();
-    for (const page of pages) {
-      if (page.url().includes('integration')) {
-        mainWindow = page;
-      } else if (page.url().includes('tests')) {
-        mainWindow = page;
-      } else if (page.url().includes('extension')) {
-        metamaskWindow = page;
+    let foundMetamaskWindow = false;
+
+    while(!foundMetamaskWindow) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      let pages = await puppeteerBrowser.pages();
+
+      for (const page of pages) {
+        if (page.url().includes('integration')) {
+          mainWindow = page;
+        } else if (page.url().includes('tests')) {
+          mainWindow = page;
+        } else if (page.url().includes('extension')) {
+          metamaskWindow = page;
+          foundMetamaskWindow = true;
+        }
       }
     }
+
     return true;
   },
   assignActiveTabName: async tabName => {
@@ -142,7 +151,7 @@ module.exports = {
   waitAndGetValue: async (selector, page = metamaskWindow) => {
     await module.exports.waitFor(selector, page);
     const element = await page.$(selector);
-    const property = await element.getProperty('value');
+    const property = await element.getProperty('textContent');
     const value = await property.jsonValue();
     return value;
   },
