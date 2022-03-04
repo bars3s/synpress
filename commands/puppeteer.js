@@ -36,10 +36,11 @@ module.exports = {
     return true;
   },
   assignWindows: async () => {
-    let foundMetamaskWindow = false;
+    let inc = 0;
 
-    while(!foundMetamaskWindow) {
+    while(true) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      inc++;
 
       let pages = await puppeteerBrowser.pages();
 
@@ -50,8 +51,12 @@ module.exports = {
           mainWindow = page;
         } else if (page.url().includes('extension')) {
           metamaskWindow = page;
-          foundMetamaskWindow = true;
+          break;
         }
+      }
+
+      if (inc > 10) {
+        break;
       }
     }
 
