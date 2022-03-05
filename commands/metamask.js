@@ -556,7 +556,7 @@ module.exports = {
     await puppeteer.waitAndClick(
       mainPageElements.optionsMenu.accountDetailsButton,
     );
-    walletAddress = await puppeteer.waitAndGetValue(
+    walletAddress = await puppeteer.waitAndGetText(
       mainPageElements.accountModal.walletAddressInput,
     );
     await puppeteer.waitAndClick(mainPageElements.accountModal.closeButton);

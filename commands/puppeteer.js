@@ -6,7 +6,7 @@ let mainWindow;
 let metamaskWindow;
 let activeTabName;
 
-module.exports = {
+const puppeteerModule = {
   puppeteerBrowser: () => {
     return puppeteerBrowser;
   },
@@ -87,12 +87,12 @@ module.exports = {
   },
   switchToCypressWindow: async () => {
     await mainWindow.bringToFront();
-    await module.exports.assignActiveTabName('cypress');
+    await puppeteerModule.assignActiveTabName('cypress');
     return true;
   },
   switchToMetamaskWindow: async () => {
     await metamaskWindow.bringToFront();
-    await module.exports.assignActiveTabName('metamask');
+    await puppeteerModule.assignActiveTabName('metamask');
     return true;
   },
   switchToMetamaskNotification: async () => {
@@ -100,7 +100,7 @@ module.exports = {
     // todo: wait for spinning loader to be gone before triggering waitFor
     // todo: get rid of waitForTimeout after fixing above
     // todo: all of the above are issues related to metamask notification of tx confirmation
-    await module.exports.metamaskWindow().waitForTimeout(3000);
+    await puppeteerModule.metamaskWindow().waitForTimeout(3000);
     let pages = await puppeteerBrowser.pages();
     for (const page of pages) {
       if (page.url().includes('notification')) {
@@ -118,7 +118,7 @@ module.exports = {
     await page.waitForTimeout(300);
   },
   waitAndClick: async (selector, page = metamaskWindow, numberOfClicks) => {
-    await module.exports.waitFor(selector, page);
+    await puppeteerModule.waitFor(selector, page);
     if (numberOfClicks) {
       let i = 0;
       while (i < numberOfClicks) {
@@ -136,7 +136,7 @@ module.exports = {
     }
   },
   waitAndClickByText: async (selector, text, page = metamaskWindow) => {
-    await module.exports.waitFor(selector, page);
+    await puppeteerModule.waitFor(selector, page);
     const elements = await page.$$(selector);
     if (elements) {
       for (let el of elements) {
@@ -149,19 +149,26 @@ module.exports = {
     }
   },
   waitAndType: async (selector, value, page = metamaskWindow) => {
-    await module.exports.waitFor(selector, page);
+    await puppeteerModule.waitFor(selector, page);
     const element = await page.$(selector);
     await element.type(value);
   },
   waitAndGetValue: async (selector, page = metamaskWindow) => {
-    await module.exports.waitFor(selector, page);
+    await puppeteerModule.waitFor(selector, page);
+    const element = await page.$(selector);
+    const property = await element.getProperty('value');
+    const value = await property.jsonValue();
+    return value;
+  },
+  waitAndGetText: async (selector, page = metamaskWindow) => {
+    await puppeteerModule.waitFor(selector, page);
     const element = await page.$(selector);
     const property = await element.getProperty('textContent');
     const value = await property.jsonValue();
     return value;
   },
   waitAndSetValue: async (text, selector, page = metamaskWindow) => {
-    await module.exports.waitFor(selector, page);
+    await puppeteerModule.waitFor(selector, page);
     await page.evaluate(
       selector => (document.querySelector(selector).value = ''),
       selector,
@@ -170,22 +177,24 @@ module.exports = {
     await page.keyboard.type(text);
   },
   waitAndClearWithBackspace: async (selector, page = metamaskWindow) => {
-    await module.exports.waitFor(selector, page);
+    await puppeteerModule.waitFor(selector, page);
     const inputValue = await page.evaluate(selector, el => el.value);
     for (let i = 0; i < inputValue.length; i++) {
       await page.keyboard.press('Backspace');
     }
   },
   waitClearAndType: async (text, selector, page = metamaskWindow) => {
-    await module.exports.waitFor(selector, page);
+    await puppeteerModule.waitFor(selector, page);
     const input = await page.$(selector);
     await input.click({ clickCount: 3 });
     await input.type(text);
   },
   waitForText: async (selector, text, page = metamaskWindow) => {
-    await module.exports.waitFor(selector, page);
+    await puppeteerModule.waitFor(selector, page);
     await page.waitForFunction(
       `document.querySelector('${selector}').innerText.toLowerCase().includes('${text.toLowerCase()}')`,
     );
   },
 };
+
+module.exports = puppeteerModule;

@@ -20,6 +20,18 @@ const accountMenu = {
   settingsButton: '.account-menu__item--clickable:nth-child(11)',
 };
 
+
+// at new WaitTask (/builder/node_modules/puppeteer-core/src/common/DOMWorld.ts:788:28)
+//     at DOMWorld.waitForFunction (/builder/node_modules/puppeteer-core/src/common/DOMWorld.ts:710:22)
+//     at Frame.waitForFunction (/builder/node_modules/puppeteer-core/src/common/FrameManager.ts:1239:28)
+//     at Page.waitForFunction (/builder/node_modules/puppeteer-core/src/common/Page.ts:3263:29)
+//     at Object.waitFor (/builder/node_modules/@synthetixio/synpress/commands/puppeteer.js:113:16)
+//     at Object.waitAndClick (/builder/node_modules/@synthetixio/synpress/commands/puppeteer.js:121:26)
+//     at Object.getWalletAddress (/builder/node_modules/@synthetixio/synpress/commands/metamask.js:556:21)
+//     at processTicksAndRejections (node:internal/process/task_queues:96:5)
+//     at Object.initialSetup (/builder/node_modules/@synthetixio/synpress/commands/metamask.js:600:23)
+//     at setupMetamask (/builder/node_modules/@synthetixio/synpress/plugins/index.js:211:7) +1m
+
 const optionsMenu = {
   button: '[data-testid=account-options-menu-button]',
   accountDetailsButton: '[data-testid="account-options-menu__account-details"]',
